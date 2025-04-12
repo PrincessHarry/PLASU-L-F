@@ -1,0 +1,210 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Home - PLASU Lost and Found{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Hero Section -->
+    <div class="gradient-bg text-white rounded-xl shadow-soft overflow-hidden mb-12">
+        <div class="p-8 md:p-12">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="md:w-2/3 mb-8 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4">Welcome to PLASU Lost and Found</h1>
+                    <p class="text-xl text-white/90 mb-8">The official platform for recovering lost items and returning found items on the Plateau State University campus.</p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="{% url 'lost_items' %}" class="bg-white text-primary-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition duration-150 ease-in-out shadow-md text-center">
+                            <i class="fas fa-exclamation-circle mr-2"></i> Browse Lost Items
+                        </a>
+                        <a href="{% url 'found_items' %}" class="bg-white/20 text-white px-6 py-3 rounded-lg font-medium hover:bg-white/30 transition duration-150 ease-in-out text-center">
+                            <i class="fas fa-hand-holding-heart mr-2"></i> Browse Found Items
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/3 flex justify-center">
+                    <div class="relative">
+                        <div class="absolute -top-4 -left-4 w-24 h-24 bg-white/20 rounded-full"></div>
+                        <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-white/20 rounded-full"></div>
+                        <i class="fas fa-search-location text-white text-8xl relative z-10"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="bg-white rounded-xl shadow-soft overflow-hidden mb-12">
+        <div class="p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Search Items</h2>
+            <form action="{% url 'search_items' %}" method="GET" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label for="q" class="block text-sm font-medium text-gray-700 mb-1">Keyword</label>
+                        <input type="text" name="q" id="q" placeholder="Search by keyword..." class="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                    </div>
+                    <div>
+                        <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                        <select name="category" id="category" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                            <option value="">All Categories</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="books">Books</option>
+                            <option value="clothing">Clothing</option>
+                            <option value="accessories">Accessories</option>
+                            <option value="documents">Documents</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select name="status" id="status" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                            <option value="">All Statuses</option>
+                            <option value="lost">Lost</option>
+                            <option value="found">Found</option>
+                            <option value="claimed">Claimed</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                        <input type="date" name="date" id="date" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" class="gradient-bg text-white px-6 py-2 rounded-lg font-medium hover:opacity-90 transition duration-150 ease-in-out shadow-md">
+                        <i class="fas fa-search mr-2"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div class="bg-gradient-to-br from-red-500 to-red-600 text-white rounded-xl shadow-soft overflow-hidden card-hover">
+            <div class="p-6">
+                <div class="flex items-center mb-4">
+                    <div class="bg-white/20 rounded-lg p-3 mr-4">
+                        <i class="fas fa-exclamation-circle text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Lost Something?</h3>
+                </div>
+                <p class="mb-4 text-white/90">Report your lost item to increase the chances of finding it.</p>
+                <a href="{% url 'report_item' %}" class="inline-flex items-center bg-white text-red-600 px-4 py-2 rounded-lg font-medium hover:bg-white/90 transition duration-150 ease-in-out">
+                    <i class="fas fa-plus mr-2"></i> Report Lost Item
+                </a>
+            </div>
+        </div>
+        <div class="bg-gradient-to-br from-green-500 to-green-600 text-white rounded-xl shadow-soft overflow-hidden card-hover">
+            <div class="p-6">
+                <div class="flex items-center mb-4">
+                    <div class="bg-white/20 rounded-lg p-3 mr-4">
+                        <i class="fas fa-hand-holding-heart text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Found Something?</h3>
+                </div>
+                <p class="mb-4 text-white/90">Help someone recover their lost item by reporting it here.</p>
+                <a href="{% url 'report_item' %}" class="inline-flex items-center bg-white text-green-600 px-4 py-2 rounded-lg font-medium hover:bg-white/90 transition duration-150 ease-in-out">
+                    <i class="fas fa-plus mr-2"></i> Report Found Item
+                </a>
+            </div>
+        </div>
+        <div class="bg-gradient-to-br from-accent-500 to-accent-600 text-white rounded-xl shadow-soft overflow-hidden card-hover">
+            <div class="p-6">
+                <div class="flex items-center mb-4">
+                    <div class="bg-white/20 rounded-lg p-3 mr-4">
+                        <i class="fas fa-user-plus text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">New to PLASU?</h3>
+                </div>
+                <p class="mb-4 text-white/90">Create an account to report items and receive notifications.</p>
+                <a href="{% url 'register' %}" class="inline-flex items-center bg-white text-accent-600 px-4 py-2 rounded-lg font-medium hover:bg-white/90 transition duration-150 ease-in-out">
+                    <i class="fas fa-user-plus mr-2"></i> Register Now
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Items -->
+    <div class="mb-12">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">Recent Items</h2>
+            <a href="{% url 'search_items' %}" class="text-primary-600 hover:text-primary-700 font-medium transition duration-150 ease-in-out">
+                View All <i class="fas fa-arrow-right ml-1"></i>
+            </a>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for item in recent_items %}
+            <div class="bg-white rounded-xl shadow-soft overflow-hidden card-hover">
+                <div class="h-48 bg-gray-200 flex items-center justify-center">
+                    {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="{{ item.title }}" class="h-full w-full object-cover">
+                    {% else %}
+                    <i class="fas fa-image text-gray-400 text-5xl"></i>
+                    {% endif %}
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-semibold text-gray-800 truncate">{{ item.title }}</h3>
+                        <span class="px-2 py-1 text-xs font-medium rounded-full {% if item.status == 'lost' %}bg-red-100 text-red-800{% elif item.status == 'found' %}bg-green-100 text-green-800{% else %}bg-blue-100 text-blue-800{% endif %}">
+                            {{ item.status|title }}
+                        </span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-2 truncate">{{ item.description }}</p>
+                    <div class="flex justify-between items-center text-sm text-gray-500">
+                        <span><i class="fas fa-map-marker-alt mr-1"></i> {{ item.location }}</span>
+                        <span><i class="fas fa-calendar-alt mr-1"></i> {{ item.date_reported|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="mt-4">
+                        <a href="{% url 'item_detail' item.pk %}" class="block text-center bg-gray-100 text-gray-800 py-2 rounded-lg hover:bg-gray-200 transition duration-150 ease-in-out">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <i class="fas fa-search text-gray-400 text-5xl mb-4"></i>
+                <p class="text-gray-600 text-lg">No items have been reported yet.</p>
+                <p class="text-gray-500 text-sm mt-2">Be the first to <a href="{% url 'report_item' %}" class="text-primary-600 hover:underline">report an item</a>.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="bg-white rounded-xl shadow-soft overflow-hidden">
+        <div class="p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Statistics</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 text-center">
+                    <div class="bg-red-100 text-red-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-exclamation-circle text-2xl"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold text-red-600 mb-1">{{ recent_items|length }}</h3>
+                    <p class="text-gray-600">Lost Items</p>
+                </div>
+                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 text-center">
+                    <div class="bg-green-100 text-green-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-hand-holding-heart text-2xl"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold text-green-600 mb-1">{{ recent_items|length }}</h3>
+                    <p class="text-gray-600">Found Items</p>
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 text-center">
+                    <div class="bg-blue-100 text-blue-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-check-circle text-2xl"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold text-blue-600 mb-1">{{ recent_items|length }}</h3>
+                    <p class="text-gray-600">Claimed Items</p>
+                </div>
+                <div class="bg-gradient-to-br from-accent-50 to-accent-100 rounded-xl p-6 text-center">
+                    <div class="bg-accent-100 text-accent-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-users text-2xl"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold text-accent-600 mb-1">{{ recent_items|length }}</h3>
+                    <p class="text-gray-600">Registered Users</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,72 @@
+{% extends 'base/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Register - PLASU Lost and Found{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center py-12">
+    <div class="max-w-md w-full mx-auto">
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Header with gradient background -->
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 px-6 py-8 text-center">
+                <h2 class="text-3xl font-bold text-white">Create Account</h2>
+                <p class="text-blue-100 mt-2">Join PLASU Lost and Found community</p>
+            </div>
+            
+            <!-- Registration form -->
+            <div class="p-8">
+                <form method="POST" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                    <div class="space-y-1">
+                        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                            {{ field.label }}
+                        </label>
+                        <div class="mt-1">
+                            {{ field|as_crispy_field }}
+                        </div>
+                        {% if field.errors %}
+                        <p class="mt-1 text-sm text-red-600">
+                            {{ field.errors|join:", " }}
+                        </p>
+                        {% endif %}
+                        {% if field.help_text %}
+                        <p class="mt-1 text-sm text-gray-500">
+                            {{ field.help_text }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    
+                    <div>
+                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                            Create Account
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-6">
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white text-gray-500">Or</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-600">
+                            Already have an account? 
+                            <a href="{% url 'login' %}" class="font-medium text-blue-600 hover:text-blue-500">
+                                Sign in here
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

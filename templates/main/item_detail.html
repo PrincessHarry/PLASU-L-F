@@ -1,0 +1,222 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ item.title }} - PLASU Lost and Found{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Breadcrumb -->
+    <nav class="flex mb-8" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 md:space-x-3">
+            <li class="inline-flex items-center">
+                <a href="{% url 'home' %}" class="text-gray-700 hover:text-blue-600 inline-flex items-center">
+                    <i class="fas fa-home mr-2"></i>
+                    Home
+                </a>
+            </li>
+            <li>
+                <div class="flex items-center">
+                    <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                    <a href="{% if item.status == 'lost' %}{% url 'lost_items' %}{% else %}{% url 'found_items' %}{% endif %}" class="text-gray-700 hover:text-blue-600">
+                        {% if item.status == 'lost' %}Lost Items{% else %}Found Items{% endif %}
+                    </a>
+                </div>
+            </li>
+            <li aria-current="page">
+                <div class="flex items-center">
+                    <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                    <span class="text-gray-500">Item Details</span>
+                </div>
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Item Status Badge -->
+    <div class="mb-8">
+        <span class="px-4 py-2 text-sm font-medium rounded-full 
+            {% if item.status == 'lost' %}bg-red-100 text-red-800
+            {% elif item.status == 'found' %}bg-green-100 text-green-800
+            {% else %}bg-blue-100 text-blue-800{% endif %}">
+            <i class="fas {% if item.status == 'lost' %}fa-exclamation-circle{% elif item.status == 'found' %}fa-hand-holding-heart{% else %}fa-check-circle{% endif %} mr-2"></i>
+            {{ item.get_status_display }}
+        </span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Column: Image and Basic Info -->
+        <div class="lg:col-span-2">
+            <!-- Image Section -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                <div class="h-96 bg-gray-200 flex items-center justify-center">
+                    {% if item.image %}
+                    <img src="{{ item.image.url }}" alt="{{ item.title }}" class="h-full w-full object-contain">
+                    {% else %}
+                    <i class="fas fa-image text-gray-400 text-7xl"></i>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Item Details -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h1 class="text-3xl font-bold text-gray-900">{{ item.title }}</h1>
+                        {% if item.reported_by == request.user %}
+                        <a href="{% url 'edit_item' item.pk %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <i class="fas fa-edit mr-2"></i> Edit Item
+                        </a>
+                        {% endif %}
+                    </div>
+                    <p class="text-gray-600 mb-6">{{ item.description }}</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500 mb-1">Category</h3>
+                            <p class="text-gray-800">{{ item.get_category_display }}</p>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500 mb-1">Location</h3>
+                            <p class="text-gray-800">{{ item.location }}</p>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500 mb-1">Date Reported</h3>
+                            <p class="text-gray-800">{{ item.date_reported|date:"F d, Y" }}</p>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-500 mb-1">Reported By</h3>
+                            <p class="text-gray-800">{{ item.reported_by.get_full_name|default:item.reported_by.username }}</p>
+                        </div>
+                    </div>
+
+                    {% if item.additional_details %}
+                    <div class="border-t border-gray-200 pt-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Additional Details</h3>
+                        <p class="text-gray-600">{{ item.additional_details }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Claims Section (if any) -->
+            {% if claims %}
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Claims</h2>
+                    <div class="space-y-4">
+                        {% for claim in claims %}
+                        <div class="border border-gray-200 rounded-lg p-4 {% if claim.status == 'pending' %}bg-yellow-50{% elif claim.status == 'approved' %}bg-green-50{% else %}bg-red-50{% endif %}">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <p class="font-medium text-gray-800">{{ claim.claimant.get_full_name|default:claim.claimant.username }}</p>
+                                    <p class="text-sm text-gray-500">{{ claim.date_claimed|date:"F d, Y" }}</p>
+                                </div>
+                                <span class="px-2 py-1 text-xs font-medium rounded-full 
+                                    {% if claim.status == 'pending' %}bg-yellow-100 text-yellow-800
+                                    {% elif claim.status == 'approved' %}bg-green-100 text-green-800
+                                    {% else %}bg-red-100 text-red-800{% endif %}">
+                                    {{ claim.get_status_display }}
+                                </span>
+                            </div>
+                            <p class="text-gray-600 text-sm">{{ claim.description }}</p>
+                            
+                            {% if claim.status == 'pending' and user == item.reported_by %}
+                            <div class="mt-4 flex space-x-2">
+                                <form method="post" action="{% url 'approve_claim' claim.id %}" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded-md text-sm hover:bg-green-700 transition duration-150 ease-in-out">
+                                        <i class="fas fa-check mr-1"></i> Approve
+                                    </button>
+                                </form>
+                                <form method="post" action="{% url 'reject_claim' claim.id %}" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded-md text-sm hover:bg-red-700 transition duration-150 ease-in-out">
+                                        <i class="fas fa-times mr-1"></i> Reject
+                                    </button>
+                                </form>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Column: Actions and Related Items -->
+        <div>
+            <!-- Action Card -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                <div class="p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Actions</h2>
+                    
+                    {% if user.is_authenticated %}
+                        {% if item.status != 'claimed' %}
+                            {% if user != item.reported_by %}
+                            <a href="{% url 'submit_claim' item.id %}" class="block w-full bg-blue-600 text-white text-center py-3 rounded-md mb-4 hover:bg-blue-700 transition duration-150 ease-in-out">
+                                <i class="fas fa-hand-holding-usd mr-2"></i> Submit a Claim
+                            </a>
+                            {% endif %}
+                            
+                            {% if user == item.reported_by %}
+                            <form method="post" action="{% url 'delete_item' item.id %}" class="mb-4">
+                                {% csrf_token %}
+                                <button type="submit" class="block w-full bg-red-600 text-white text-center py-3 rounded-md hover:bg-red-700 transition duration-150 ease-in-out" onclick="return confirm('Are you sure you want to delete this item?')">
+                                    <i class="fas fa-trash-alt mr-2"></i> Delete Item
+                                </button>
+                            </form>
+                            {% endif %}
+                        {% else %}
+                        <div class="bg-green-100 text-green-800 p-4 rounded-md mb-4">
+                            <i class="fas fa-check-circle mr-2"></i> This item has been claimed
+                        </div>
+                        {% endif %}
+                    {% else %}
+                    <div class="bg-yellow-100 text-yellow-800 p-4 rounded-md mb-4">
+                        <i class="fas fa-info-circle mr-2"></i> Please <a href="{% url 'login' %}" class="underline">log in</a> to submit claims or manage items
+                    </div>
+                    {% endif %}
+                    
+                    <a href="{% url 'share_item' item.id %}" class="block w-full bg-indigo-600 text-white text-center py-3 rounded-md hover:bg-indigo-700 transition duration-150 ease-in-out">
+                        <i class="fas fa-share-alt mr-2"></i> Share Item
+                    </a>
+                </div>
+            </div>
+
+            <!-- Related Items -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Similar Items</h2>
+                    <div class="space-y-4">
+                        {% for related_item in related_items %}
+                        <a href="{% url 'item_detail' related_item.id %}" class="block hover:bg-gray-50 p-3 rounded-lg transition duration-150 ease-in-out">
+                            <div class="flex items-center">
+                                <div class="h-16 w-16 bg-gray-200 rounded-md flex-shrink-0 flex items-center justify-center mr-4">
+                                    {% if related_item.image %}
+                                    <img src="{{ related_item.image.url }}" alt="{{ related_item.title }}" class="h-full w-full object-cover rounded-md">
+                                    {% else %}
+                                    <i class="fas fa-image text-gray-400 text-xl"></i>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <h3 class="text-gray-800 font-medium truncate">{{ related_item.title }}</h3>
+                                    <p class="text-sm text-gray-500">{{ related_item.get_category_display }}</p>
+                                    <span class="inline-block px-2 py-1 text-xs font-medium rounded-full mt-1
+                                        {% if related_item.status == 'lost' %}bg-red-100 text-red-800
+                                        {% elif related_item.status == 'found' %}bg-green-100 text-green-800
+                                        {% else %}bg-blue-100 text-blue-800{% endif %}">
+                                        {{ related_item.get_status_display }}
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                        {% empty %}
+                        <p class="text-gray-500 text-center py-4">No similar items found</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

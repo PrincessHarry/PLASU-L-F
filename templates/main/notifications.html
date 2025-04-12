@@ -1,0 +1,105 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Notifications - PLASU Lost and Found{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 px-6 py-6">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-white">Notifications</h1>
+                {% if notifications %}
+                <form method="POST" action="{% url 'mark_all_read' %}" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-white text-blue-600 px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-50 transition duration-150 ease-in-out">
+                        <i class="fas fa-check-double mr-1"></i> Mark all as read
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="p-6">
+            <div class="space-y-4">
+                {% for notification in notifications %}
+                <div class="bg-gray-50 rounded-lg p-4 {% if not notification.is_read %}border-l-4 border-blue-500{% endif %} transition duration-150 ease-in-out hover:shadow-md">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center">
+                                {% if notification.notification_type == 'claim_submitted' %}
+                                <i class="fas fa-file-alt text-blue-500 mr-2"></i>
+                                {% elif notification.notification_type == 'claim_approved' %}
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                {% elif notification.notification_type == 'claim_rejected' %}
+                                <i class="fas fa-times-circle text-red-500 mr-2"></i>
+                                {% elif notification.notification_type == 'item_claimed' %}
+                                <i class="fas fa-handshake text-purple-500 mr-2"></i>
+                                {% elif notification.notification_type == 'new_claim' %}
+                                <i class="fas fa-bell text-yellow-500 mr-2"></i>
+                                {% endif %}
+                                <p class="text-gray-800 font-medium">{{ notification.message }}</p>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1 ml-6">{{ notification.created_at|timesince }} ago</p>
+                        </div>
+                        {% if not notification.is_read %}
+                        <form method="POST" action="{% url 'mark_read' notification.id %}" class="ml-4">
+                            {% csrf_token %}
+                            <button type="submit" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                <i class="fas fa-check mr-1"></i> Mark as read
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    {% if notification.item %}
+                    <div class="mt-2 ml-6">
+                        <a href="{% url 'item_detail' notification.item.pk %}" class="text-blue-600 hover:text-blue-800 text-sm font-medium inline-flex items-center">
+                            <i class="fas fa-external-link-alt mr-1"></i> View Item
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <div class="text-center py-12">
+                    <i class="fas fa-bell-slash text-gray-400 text-5xl mb-4"></i>
+                    <p class="text-gray-600 text-lg">No notifications yet.</p>
+                    <p class="text-gray-500 text-sm mt-2">When you receive notifications, they will appear here.</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if notifications.has_other_pages %}
+            <div class="mt-8 flex justify-center">
+                <nav class="inline-flex rounded-md shadow">
+                    {% if notifications.has_previous %}
+                    <a href="?page={{ notifications.previous_page_number }}" 
+                       class="px-3 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        <i class="fas fa-chevron-left mr-1"></i> Previous
+                    </a>
+                    {% endif %}
+
+                    {% for num in notifications.paginator.page_range %}
+                    {% if notifications.number == num %}
+                    <span class="px-3 py-2 border border-gray-300 bg-blue-600 text-white text-sm font-medium">
+                        {{ num }}
+                    </span>
+                    {% else %}
+                    <a href="?page={{ num }}" 
+                       class="px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        {{ num }}
+                    </a>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if notifications.has_next %}
+                    <a href="?page={{ notifications.next_page_number }}" 
+                       class="px-3 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        Next <i class="fas fa-chevron-right ml-1"></i>
+                    </a>
+                    {% endif %}
+                </nav>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 
