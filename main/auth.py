@@ -1,12 +1,9 @@
-from django.contrib.auth import logout
-from django.shortcuts import redirect
-from django.contrib import messages
+# from django.contrib.auth import logout
+# from django.contrib import messages
+# from django.shortcuts import redirect
 
-def logout_view(request):
-    """
-    Custom logout view that logs out the user, displays a success message,
-    and redirects to the home page.
-    """
-    logout(request)
-    messages.success(request, 'You have been successfully logged out.')
-    return redirect('home') 
+# def logout_view(request):
+#     """Logout the user and redirect to home page"""
+#     logout(request)
+#     messages.success(request, 'You have been successfully logged out.')
+#     return redirect('accounts:login') 

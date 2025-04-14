@@ -84,7 +84,7 @@
                         </div>
                         <div>
                             <h3 class="text-sm font-medium text-gray-500 mb-1">Reported By</h3>
-                            <p class="text-gray-800">{{ item.reported_by.get_full_name|default:item.reported_by.username }}</p>
+                            <p class="text-gray-800">{{ item.reported_by.full_name }}</p>
                         </div>
                     </div>
 
@@ -107,7 +107,7 @@
                         <div class="border border-gray-200 rounded-lg p-4 {% if claim.status == 'pending' %}bg-yellow-50{% elif claim.status == 'approved' %}bg-green-50{% else %}bg-red-50{% endif %}">
                             <div class="flex justify-between items-start mb-2">
                                 <div>
-                                    <p class="font-medium text-gray-800">{{ claim.claimant.get_full_name|default:claim.claimant.username }}</p>
+                                    <p class="font-medium text-gray-800">{{ claim.claimant.full_name }}</p>
                                     <p class="text-sm text-gray-500">{{ claim.date_claimed|date:"F d, Y" }}</p>
                                 </div>
                                 <span class="px-2 py-1 text-xs font-medium rounded-full 
@@ -173,7 +173,7 @@
                         {% endif %}
                     {% else %}
                     <div class="bg-yellow-100 text-yellow-800 p-4 rounded-md mb-4">
-                        <i class="fas fa-info-circle mr-2"></i> Please <a href="{% url 'login' %}" class="underline">log in</a> to submit claims or manage items
+                        <i class="fas fa-info-circle mr-2"></i> Please <a href="{% url 'accounts:login' %}" class="underline">log in</a> to submit claims or manage items
                     </div>
                     {% endif %}
                     

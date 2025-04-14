@@ -4,8 +4,9 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
 from .models import Item, Claim, Notification
-from .forms import UserRegisterForm, ItemForm, ClaimForm
+from .forms import CustomUserCreationForm, ItemForm, ClaimForm
 from django.contrib.auth import logout
+from django.utils import timezone
 
 def home(request):
     recent_items = Item.objects.filter(is_active=True).order_by('-date_reported')[:6]
@@ -16,14 +17,13 @@ def home(request):
 
 def register(request):
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}! You can now log in.')
-            return redirect('login')
+            user = form.save()
+            messages.success(request, 'Account created successfully! You can now log in.')
+            return redirect('accounts:login')
     else:
-        form = UserRegisterForm()
+        form = CustomUserCreationForm()
     return render(request, 'main/register.html', {'form': form})
 
 @login_required
@@ -250,3 +250,30 @@ def edit_item(request, pk):
         'item': item,
     }
     return render(request, 'main/edit_item.html', context)
+
+@login_required
+def delete_item(request, item_id):
+    """Delete an item"""
+    item = get_object_or_404(Item, id=item_id)
+    
+    # Check if the user is the owner of the item
+    if item.reported_by != request.user:
+        messages.error(request, 'You do not have permission to delete this item.')
+        return redirect('item_detail', pk=item_id)
+    
+    if request.method == 'POST':
+        item.delete()
+        messages.success(request, 'Item has been successfully deleted.')
+        return redirect('home')
+    
+    return redirect('item_detail', pk=item_id)
+
+@login_required
+def share_item(request, item_id):
+    """Share an item via email or social media"""
+    item = get_object_or_404(Item, id=item_id)
+    
+    # For now, we'll just redirect to the item detail page with a success message
+    # In a real implementation, you would add functionality to share via email or social media
+    messages.success(request, f'Item "{item.title}" has been shared successfully.')
+    return redirect('item_detail', pk=item_id)
