@@ -3,15 +3,26 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Q
-from .models import Item, Claim, Notification
+from .models import Item, Claim, Notification, CustomUser
 from .forms import CustomUserCreationForm, ItemForm, ClaimForm
 from django.contrib.auth import logout
 from django.utils import timezone
 
 def home(request):
     recent_items = Item.objects.filter(is_active=True).order_by('-date_reported')[:6]
+    
+    # Get statistics from the database
+    lost_items_count = Item.objects.filter(status='lost', is_active=True).count()
+    found_items_count = Item.objects.filter(status='found', is_active=True).count()
+    claimed_items_count = Item.objects.filter(status='claimed', is_active=True).count()
+    registered_users_count = CustomUser.objects.count()
+    
     context = {
         'recent_items': recent_items,
+        'lost_items_count': lost_items_count,
+        'found_items_count': found_items_count,
+        'claimed_items_count': claimed_items_count,
+        'registered_users_count': registered_users_count,
     }
     return render(request, 'main/home.html', context)
 

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,16 +12,16 @@
                 extend: {
                     colors: {
                         primary: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            200: '#bae6fd',
-                            300: '#7dd3fc',
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e',
+                            50: '#f5f9e6',
+                            100: '#e6f2cc',
+                            200: '#cce599',
+                            300: '#b3d866',
+                            400: '#99cb33',
+                            500: '#7FA004',
+                            600: '#668003',
+                            700: '#4c6002',
+                            800: '#334002',
+                            900: '#192001',
                         },
                         secondary: {
                             50: '#f0fdf4',
@@ -64,10 +65,10 @@
             font-family: 'Inter', sans-serif;
         }
         .gradient-bg {
-            background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, #7FA004 0%, #99cb33 100%);
         }
         .gradient-bg-alt {
-            background: linear-gradient(135deg, #22c55e 0%, #0ea5e9 100%);
+            background: linear-gradient(135deg, #22c55e 0%, #7FA004 100%);
         }
         .gradient-bg-accent {
             background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
@@ -78,6 +79,14 @@
         .card-hover:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        /* Mobile text size adjustments */
+        @media (max-width: 640px) {
+            .text-4xl {
+                font-size: 1.25rem;
+                line-height: 0;
+            }
         }
     </style>
     {% block extra_css %}{% endblock %}
@@ -90,10 +99,8 @@
                 <div class="flex">
                     <div class="flex-shrink-0 flex items-center">
                         <a href="{% url 'home' %}" class="flex items-center">
-                            <div class="gradient-bg rounded-lg p-2 mr-2">
-                                <i class="fas fa-search-location text-white text-xl"></i>
-                            </div>
-                            <span class="text-xl font-bold text-gray-800">PLASU <span class="text-primary-600">L&F</span></span>
+                            <img src="{% static 'images/banner.png' %}" alt="PLASU Lost and Found" class="h-10 w-auto mr-2">
+
                         </a>
                     </div>
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
@@ -240,10 +247,8 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div>
                     <div class="flex items-center mb-4">
-                        <div class="gradient-bg rounded-lg p-2 mr-2">
-                            <i class="fas fa-search-location text-white text-xl"></i>
-                        </div>
-                        <span class="text-xl font-bold text-gray-800">PLASU <span class="text-primary-600">L&F</span></span>
+                        <img src="{% static 'images/banner.png' %}" alt="PLASU Lost and Found" class="h-10 w-auto mr-2">
+                       
                     </div>
                     <p class="text-gray-500 text-sm">
                         Helping students and staff recover their lost items on campus.
