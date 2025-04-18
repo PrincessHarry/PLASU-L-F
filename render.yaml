@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: plasu-lost-and-found
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn lost_and_found.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: ALLOWED_HOSTS
+        value: plasu-l-f.onrender.com 
